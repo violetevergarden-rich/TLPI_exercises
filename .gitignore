@@ -1,18 +1,17 @@
-# 忽略所有没有后缀名的文件（Linux 下的可执行程序通常没有后缀）
-# 这能过滤掉 Chapter4/cp, Chapter5/ex7 等编译产物
+# 1. 忽略所有没有后缀名的文件（也就是 Linux 下的可执行程序）
 *
 !*.*
 
-# 排除例外：即使没有后缀名也要保留的文件
+# 2. 即使没有后缀也要保留的特殊文件
 !.gitignore
-!Makefile
-!Makefile.inc
+!Makefile*
+!README*
 !BUILDING
-!README
 !CHANGES
+!COPYING*
 
-# 明确允许所有的源码、头文件、静态库和 Makefile
+# 3. 确保所有子文件夹里的源码和库文件都能进去
 !*.c
 !*.h
 !*.a
-!Makefile*
+!*.so

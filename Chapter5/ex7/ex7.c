@@ -13,7 +13,6 @@
 ssize_t 
 my_readv(int fd, const struct iovec *iov, int iovcnt)
 {
-    int numread;
     int total_size = 0;
     for(int i=0;i<iovcnt;i++){
         total_size += iov[i].iov_len;
@@ -58,6 +57,39 @@ my_readv(int fd, const struct iovec *iov, int iovcnt)
 }
 
 int 
+my_writev(int fd, const struct iovec *iov, int iovcnt )
+{
+   int total_size = 0;
+   for(int i=0;i<iovcnt;i++){
+       total_size += iov[i].iov_len;
+   }
+
+   if(total_size == 0)
+       return 0;
+
+   char* big = (char*)malloc(total_size);
+   if(big == NULL)
+       errExit("malloc");
+
+   ssize_t current_offset = 0;
+   for(int i=0;i<iovcnt;i++){
+         ssize_t copy_len = iov[i].iov_len;
+
+         mempcpy( big + current_offset, iov[i].iov_base, copy_len);
+         current_offset += copy_len;
+
+    }
+
+    write(fd, big, current_offset);
+
+    free(big);
+
+    return current_offset;
+   
+}
+
+
+int 
 main(int argc, char *argv[])
 {
     
@@ -80,5 +112,10 @@ main(int argc, char *argv[])
 
     printf("The buf1 is %s\n", buf1);
     printf("The buf2 is %s\n", buf2);
+
+    int fd2 = open("test_writev.txt", O_RDWR | O_CREAT | O_TRUNC, 0644);
+    my_writev(fd2, iov, 2);
+
+    return 0;
 
 }
